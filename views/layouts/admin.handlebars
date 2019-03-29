@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Administration</title>
+        <link rel="stylesheet" type="text/css" href="/css/styles.css">
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <script type="text/javascript" src="/js/script.js"></script>
+    </head>
+    <body>
+        <div class="column-center">
+            <div class="header left image-container">
+                <img src="/images/falcon.png" width="110px" /><img src="/images/trailblazer.png" class="image-scale-horizontal image-scale-vertical" />
+            </div>
+            
+            <div class="body">
+                <div class="username float-right">Logged in as: {{this.user.username}} <a href="/logout">(logout)</a></div>
+                {{{body}}}
+            </div>
+        </div>
+    </body>
+</html>
