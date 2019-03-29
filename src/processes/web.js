@@ -12,11 +12,11 @@ const redisClient = redis.promisifiedClient;
 
 // create expres app, add static content and configure sessions
 const app = express();
-app.use(express.static(path.join(__dirname, '..', 'public')));
-app.use(require("./configure-session.js")(redis.client));
+app.use(express.static(path.join(__dirname, '..', '..', 'public')));
+app.use(require("../configure-session.js")(redis.client));
 
 // configure authentication
-require("./configure-authentication.js").initialize(app);
+require("../configure-authentication.js").initialize(app);
 
 // configure handlebars for templating
 app.engine("handlebars", exphbs({
@@ -40,7 +40,7 @@ if(process.env.NODE_ENV === 'production') {
 }
 
 // configure routes
-require("./configure-routes.js")(app);
+require("../configure-routes.js")(app);
 
 // add error handler
 app.use((err, req, res, next) => {
@@ -50,7 +50,7 @@ app.use((err, req, res, next) => {
 // listen
 const port = process.env.PORT || 8080;
 const httpServer = require('http').createServer(app);
-require("./websocket.js").createInstance(httpServer);
+require("../websocket.js").createInstance(httpServer);
 httpServer.listen(port);
 console.log(`Listening on port ${port}`);
 
