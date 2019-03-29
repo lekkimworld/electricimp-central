@@ -7,9 +7,37 @@ const eventing = require("../configure-events.js");
 
 // constants
 const VALID_TYPES = ["motion"];
+const VALID_ACTIONS = ["broken-snowspeeder"];
 
 // use JSON for POST bodies
 router.use(bodyParser.json());
+
+router.post("/simulate", (req, res) => {
+    // get action
+    const action = req.body.action;
+    if (!action) return res.status(417).send({"status": "error", "error": "Missing action"});
+
+    if (!VALID_ACTIONS.includes(action)) return res.status(417).send({"status": "error", "error": `Invalid / unknown action (${action})`});
+    let obj;
+    if (action === "broken-snowspeeder") {
+        obj = {
+            "type": "motion",
+            "motion": undefined,
+            "simulate": true,
+            "x": 0,
+            "y": 0,
+            "z": "0"
+        }
+    }
+
+    // send to event topic
+    eventing.topics.events.publish(`simulate.${obj.type}`, obj);
+
+    // send to queue
+    if (obj.type === "motion") {
+        eventing.queues.motion.publish(obj);
+    }
+})
 
 router.post("/data", (req, res) => {
     // set content type

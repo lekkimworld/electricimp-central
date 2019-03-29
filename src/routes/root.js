@@ -23,7 +23,7 @@ router.get('/oauth/callback', passport.authenticate('oauth2', {failureRedirect: 
     req.session.user = req.user;
 
     // successful authentication, redirect home.
-    res.redirect("/admin/events");
+    res.redirect("/");
 });
 
 
