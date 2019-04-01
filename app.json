@@ -42,6 +42,9 @@
     },
     "SF_USERNAME": {
       "required": true
+    },
+    "SPEEDER_EXTERNAL_ID": {
+      "required": true
     }
   },
   "formation": {
