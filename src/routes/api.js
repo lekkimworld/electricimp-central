@@ -22,7 +22,16 @@ router.post("/simulate", (req, res) => {
     if (action === "broken-snowspeeder") {
         obj = {
             "type": "motion",
-            "motion": undefined,
+            "movement": false,
+            "simulate": true,
+            "x": 0,
+            "y": 0,
+            "z": "0"
+        }
+    } else if (action === "attacking-snowspeeder") {
+        obj = {
+            "type": "motion",
+            "movement": true,
             "simulate": true,
             "x": 0,
             "y": 0,

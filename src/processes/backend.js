@@ -12,7 +12,10 @@ eventing.queues.motion.subscribe((payload, callback) => {
 			"instanceUrl": data.instance_url,
 			"accessToken": data.access_token
 		});
-		conn.sobject("Broken_Snowspeeder__e").create({"Speeder_External_ID__c": process.env.SPEEDER_EXTERNAL_ID}).then(sf_result => {			
+		conn.sobject("Snowspeeder_Status__e").create({
+			"Speeder_External_ID__c": process.env.SPEEDER_EXTERNAL_ID,
+			"Attacking__c": payload.movement
+			}).then(sf_result => {		
 			// post to topic
 			eventing.topics.events.publish("success.snowspeeder", `Sent Platform Event to Salesforce`);
 
