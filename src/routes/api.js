@@ -7,7 +7,7 @@ const eventing = require("../configure-events.js");
 
 // constants
 const VALID_TYPES = ["motion"];
-const VALID_ACTIONS = ["broken-snowspeeder"];
+const VALID_ACTIONS = ["attacking-snowspeeder", "broken-snowspeeder"];
 
 // use JSON for POST bodies
 router.use(bodyParser.json());
