@@ -50,6 +50,13 @@ pre.events {
     color: #fff;
 }
 
+.btn-imp {
+    font-size: 0.8rem;
+    border: 1px solid #121457;
+    background-color: rgb(218, 181, 17);
+    color: #000;
+}
+
 .btn-error {
     border: 1px solid #121457;
     background-color: #ED7D31;
@@ -269,6 +276,7 @@ input[type=text].required {
     padding: 30px;
 }
 
-#validation_msg {
+#imp-state {
     color: red;
+    font-size: 0.9rem;
 }

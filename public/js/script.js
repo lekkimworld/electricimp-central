@@ -5,18 +5,36 @@ const postStateMessage = (action, data) => {
     }, data);
 
     // post to update state
-    return fetch(document.location.href + "api/simulate", {
+    return fetch(document.location.href + "api/action", {
         "method": "post", 
         "headers": {
             "Content-Type": "application/json"
         },
         "body": JSON.stringify(payload)
     }).then(res => res.json()).then(data => {
+        console.log(`/api/action returned status = ${data.status}`);
         if (data.status === "ok") {
-            window.location.reload();
-            return Promise.resolve();
+            return Promise.resolve(data);
         } else {
             return Promise.reject(Error(data.error));
+        }
+    })
+}
+const addImpActionListeners = (selector, callback) => {
+    document.querySelectorAll(selector).forEach(node => {
+        if (node) {
+            const action = node.getAttribute("custom-action");
+            if (action) {
+                node.addEventListener("click", (event) => {
+                    // prevent default event
+                    event.preventDefault = true;
+                    postStateMessage(action).then(data => {
+                        callback(undefined, data);
+                    }).catch(err => {
+                        callback(err, undefined);
+                    });
+                })
+            }
         }
     })
 }

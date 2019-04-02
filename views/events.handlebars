@@ -1,8 +1,13 @@
 <h1>Events</h1>
-<button class="btn btn-standard" id="btn-broken-snowspeeder" action="broken-snowspeeder">Simulate Broken Snowspeeder</button>
-<button class="btn btn-standard" id="btn-broken-snowspeeder" action="attacking-snowspeeder">Simulate Attacking Snowspeeder</button>
+<button class="btn btn-standard" id="btn-broken-snowspeeder" action="simulate.broken-snowspeeder">Simulate Broken Snowspeeder</button>
+<button class="btn btn-standard" id="btn-attacking-snowspeeder" action="simulate.attacking-snowspeeder">Simulate Attacking Snowspeeder</button>
 <pre class="events p-around--medium" id="events">
 </pre>
+<div id="imp-state" class="hidden m-vertical--small"></div>
+<button class="btn btn-imp" id="btn-get-imp-state" custom-action="get.imp-state">Get Electric Imp Agent State</button>
+<button class="btn btn-imp" id="btn-imp-backend-on" custom-action="set.imp-backend-on">Electric Imp - Backend ON</button>
+<button class="btn btn-imp" id="btn-imp-backend-off" custom-action="set.imp-backend-off">Electric Imp - Backend OFF</button>
+
 <script>
     let buildResult = []
     let appendStatus = (txt) => {
@@ -41,4 +46,16 @@
             appendStatus(`${obj.msg}`)
         })
     })
+
+    addImpActionListeners(".btn-imp", (err, data) => {
+        const elem = document.getElementById("imp-state");
+        elem.innerText = JSON.stringify(data);
+        elem.classList.toggle("visible");
+        elem.classList.toggle("hidden");
+        window.setTimeout(() => {
+            elem.classList.toggle("hidden");
+            elem.classList.toggle("visible");
+        }, 5000);
+    })
+
 </script>
