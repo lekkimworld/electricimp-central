@@ -12,7 +12,7 @@ eventing.queues.motion.subscribe((payload, callback) => {
 			"instanceUrl": data.instance_url,
 			"accessToken": data.access_token
 		});
-		conn.sobject("Snowspeeder_Status__e").create({
+		conn.sobject(process.env.PLATFORM_EVENT_NAME).create({
 			"Speeder_External_ID__c": process.env.SPEEDER_EXTERNAL_ID,
 			"Attacking__c": payload.movement
 			}).then(sf_result => {		
