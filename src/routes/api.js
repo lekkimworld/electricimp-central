@@ -8,7 +8,7 @@ const fetch = require("node-fetch");
 
 // constants
 const VALID_TYPES = ["motion"];
-const VALID_ACTIONS = ["get.imp-state", "set.imp-backend-on", "set.imp-backend-off", "simulate.attacking-snowspeeder", "simulate.broken-snowspeeder"];
+const VALID_ACTIONS = ["get.imp-state", "set.imp-backend-on", "set.imp-backend-off", "simulate.running", "simulate.stopped"];
 
 // use JSON for POST bodies
 router.use(bodyParser.json());
@@ -47,23 +47,17 @@ router.post("/action", (req, res) => {
     let obj;
     let topicKey;
     if (action.indexOf("simulate.") === 0) {
-        if (action === "simulate.broken-snowspeeder") {
+        if (action === "simulate.stopped") {
             obj = {
                 "type": "motion",
                 "movement": false,
-                "simulate": true,
-                "x": 0,
-                "y": 0,
-                "z": "0"
+                "simulate": true
             }
-        } else if (action === "simulate.attacking-snowspeeder") {
+        } else if (action === "simulate.running") {
             obj = {
                 "type": "motion",
                 "movement": true,
-                "simulate": true,
-                "x": 0,
-                "y": 0,
-                "z": "0"
+                "simulate": true
             }
         }
         if (!obj) return;
