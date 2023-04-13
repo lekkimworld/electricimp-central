@@ -1,9 +1,9 @@
 const session = require("express-session");
-const RedisStore = require("connect-redis")(session);
-const uuid = require("uuid/v4");
+const RedisStore = require("connect-redis").default;
+const uuid = require("uuid").v4;
 
 const DEFAULT_SESSION_TTL = 2;
-const ttl = (function() {
+const ttl = (function () {
     let hours;
     if (process.env.SESSION_TTL) {
         try {
@@ -12,12 +12,14 @@ const ttl = (function() {
         } catch (err) {}
     }
     if (!hours) {
-        console.log(`ERROR reading SESSION_TTL from environment (${process.env.SESSION_TTL}) - session TTL is set to default (${DEFAULT_SESSION_TTL}) hours`);
+        console.log(
+            `ERROR reading SESSION_TTL from environment (${process.env.SESSION_TTL}) - session TTL is set to default (${DEFAULT_SESSION_TTL}) hours`
+        );
         hours = DEFAULT_SESSION_TTL;
     }
     return hours * 60 * 60;
 })();
-const secret = (function() {
+const secret = (function () {
     if (process.env.SESSION_SECRET) {
         console.log(`Using SESSION_SECRET provided by environment`);
         return process.env.SESSION_SECRET;
@@ -27,15 +29,16 @@ const secret = (function() {
     }
 })();
 
-module.exports = (redisClient) => {
+module.exports = (client) => {
+    const store = new RedisStore({
+        client,
+        prefix: "session:",
+        ttl: ttl,
+    });
     return session({
-        "saveUninitialized": false,
-        "resave": false,
-        "secret": secret,
-        "store": new RedisStore({
-            "client": redisClient,
-            "prefix": "session:",
-            "ttl": ttl
-        })
-    })
-}
+        saveUninitialized: false,
+        resave: false,
+        secret: secret,
+        store,
+    });
+};

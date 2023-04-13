@@ -24,8 +24,8 @@
       "required": false
     },
     "SF_LOGIN_URL": {
-      "description": "Salesforce login url user OAuth authentication (should be login.salesforce.com or test.salesforce.com)",
-      "required": false
+      "description": "Salesforce MyDomain url user OAuth authentication (i.e. mydomain.my.salesforce.com)",
+      "required": true
     },
     "SF_CALLBACK_URL": {
       "description": "OAuth callback URL from Salesforce Connected App for user authentication",
@@ -39,14 +39,6 @@
       "description": "OAuth client secret from Salesforce Connected App for server to Heroku communication",
       "required": false
     },
-    "SF_PASSWORD": {
-      "description": "Password from Salesforce for server to Heroku communication",
-      "required": false
-    },
-    "SF_USERNAME": {
-      "description": "Username from Salesforce for server to Heroku communication",
-      "required": false
-    },
     "ASSET_ID": {
       "description": "Id of the Asset record in Salesforce to map the sent Platform Event to an Asset record",
       "required": false
@@ -56,9 +48,8 @@
       "required": false
     },
     "PLATFORM_EVENT_NAME": {
-      "description": "Name of the Salesforce Platform Event to emit",
-      "required": true,
-      "value": "Electric_Imp_Event__e"
+      "description": "Name of the Salesforce Platform Event to emit - defaults to Electric_Imp_Event__e",
+      "required": false
     },
     "ELECTRICIMP_AGENT_URL": {
       "description": "URL to then Electric Imp server as copied from the Electric Imp UI for backend status and communication",
