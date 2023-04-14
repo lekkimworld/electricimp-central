@@ -5,13 +5,23 @@ const eventing = require("../configure-events.js");
 const oauth = require("../salesforce-oauth.js");
 const jsforce = require("jsforce");
 
-eventing.queues.motion.subscribe((payload, callback) => {
-    // send event to Salesforce
-    oauth().then((data) => {
+let accessData;
+
+const sendPlatformEvent = (wrapper, callback) => {
+    const payload = wrapper.payload;
+    const retryCount = wrapper.retryCount;
+    console.log(`Preparing to send platform event - retryCount <${retryCount}>`, wrapper);
+
+    new Promise((resolve, reject) => {
+        if (accessData) return resolve(accessData);
+        oauth().then((data) => {
+            accessData = data;
+            resolve(accessData);
+        });
+    }).then((data) => {
         const conn = new jsforce.Connection({
             instanceUrl: data.instance_url,
-            accessToken: data.access_token,
-            version: process.env.SF_API_VERSION || "57.0",
+            accessToken: data.access_token
         });
         const event_payload = {
             Running__c: payload.movement,
@@ -23,7 +33,7 @@ eventing.queues.motion.subscribe((payload, callback) => {
             .create(event_payload)
             .then((sf_result) => {
                 // post to topic
-                console.log("Send Platform Event to Salesforce", event_payload);
+                console.log("Sent Platform Event to Salesforce", event_payload);
                 eventing.topics.events.publish("success.event.motion", `Sent Platform Event to Salesforce`);
                 if (
                     process.env.SF_CHATTER_MENTION_USERID &&
@@ -62,17 +72,36 @@ eventing.queues.motion.subscribe((payload, callback) => {
             })
             .catch((err) => {
                 // post to topic
-                console.log(err);
+                const msg = `Could not send Platform Event to Salesforce (${err.message}) retryCount <${wrapper.retryCount}>`;
+                console.log(msg, err);
+
+                // increment retry count
+                wrapper.retryCount = retryCount + 1;
+
+                // send feedback to topic
                 eventing.topics.events.publish(
                     "error.event.motion",
-                    `Could not send Platform Event to Salesforce (${err.message})`
+                    msg
                 );
+                wrapper.error = err;
+                accessData = undefined;
             })
             .then(() => {
-                // acknowledge processing to queue
-                callback();
+                // retry if okay
+                if (wrapper.error && wrapper.retryCount < 5) {
+                    delete wrapper.error;
+                    return sendPlatformEvent(wrapper, callback);
+                } else {
+                    // acknowledge processing to queue
+                    callback();
+                }
             });
     });
+}
+
+eventing.queues.motion.subscribe((payload, callback) => {
+    console.log("Received queue message with payload", payload);
+    sendPlatformEvent({retryCount: 0, payload}, callback);
 });
 
 // setup termination listener

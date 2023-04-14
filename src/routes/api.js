@@ -69,6 +69,7 @@ router.post("/action", (req, res) => {
         // send to queue
         if (obj.type === "motion") {
             eventing.queues.motion.publish(obj);
+            console.log(`Sent payload to queue`, obj);
         }
 
         // set status

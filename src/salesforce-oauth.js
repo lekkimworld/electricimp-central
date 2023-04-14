@@ -2,6 +2,9 @@ const fetch = require("node-fetch");
 const FormData = require("form-data");
 
 module.exports = () => {
+    // log
+    console.log("Using client_credentials flow to obtain access_token");
+
     // create form data
     const formdata = new FormData();
     formdata.append("grant_type", "client_credentials");
@@ -20,6 +23,7 @@ module.exports = () => {
                 console.log(`ERROR - unable to perform auth to Salesforce`, data);
                 return Promise.reject(Error(data.error_description));
             }
+            console.log(`Obtained access_token for instance <${data.instance_url}>`);
             return Promise.resolve(data);
         });
 };
